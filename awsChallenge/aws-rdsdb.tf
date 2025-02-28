@@ -30,14 +30,26 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+data "aws_secretsmanager_secret" "db_secret" {
+  name = "db_credentials"
+}
+
+data "aws_secretsmanager_secret_version" "db_secret_version" {
+  secret_id = data.aws_secretsmanager_secret.db_secret.id
+}
+
+
+
 resource "aws_db_instance" "rds_instance" {
-  allocated_storage      = 20
-  engine                 = "mysql"
-  engine_version         = "8.0"
-  instance_class         = "db.t3.micro"
-  db_name                = "mydatabase"
-  username               = "admin"
-  password               = "MySecurePass123"
+  allocated_storage = 20
+  engine            = "mysql"
+  engine_version    = "8.0"
+  instance_class    = "db.t3.micro"
+  db_name           = "mydatabase"
+  #   username               = "admin"
+  #   password               = "MySecurePass123"
+  username               = jsondecode(data.aws_secretsmanager_secret_version.db_secret_version.secret_string)["username"]
+  password               = jsondecode(data.aws_secretsmanager_secret_version.db_secret_version.secret_string)["password"]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   skip_final_snapshot    = true
