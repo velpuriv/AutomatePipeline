@@ -1,0 +1,13 @@
+name: Destroy Terraform Resources on EC2
+
+on:
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  destroy:
+    runs-on: self-hosted
+    steps:
+      - name: Navigate to Terraform Directory
+        run: |
+          cd ~/terraform
+          terraform destroy -auto-approve
