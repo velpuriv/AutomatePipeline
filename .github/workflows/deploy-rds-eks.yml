@@ -1,0 +1,40 @@
+name: Deploy AWS Resources
+
+on:
+  push:
+    branches:
+      - main  # Triggers on main branch push
+  workflow_dispatch:  # Allows manual execution
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Ensure awsChallenge Directory Exists
+        run: mkdir -p ~/Aws-Challenge
+
+      - name: Copy awsChallenge Files to Runner Directory
+        run: rsync -av --delete Aws-Challenge/ ~/Aws-Challenge/
+
+      - name: Initialize Terraform
+        run: |
+          cd ~/awsChallenge
+          terraform init
+
+      - name: Validate Terraform Configuration
+        run: |
+          cd ~/awsChallenge
+          terraform validate
+
+      - name: Plan Terraform Changes
+        run: |
+          cd ~/awsChallenge
+          terraform plan -out=tfplan
+
+      - name: Apply Terraform Configuration
+        run: |
+          cd ~/awsChallenge
+          terraform apply -auto-approve tfplan
