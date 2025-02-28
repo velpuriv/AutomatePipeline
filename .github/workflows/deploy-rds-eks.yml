@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Ensure awsChallenge Directory Exists
-        run: mkdir -p ~/Aws-Challenge
+        run: mkdir -p ~/awsChallenge
 
       - name: Copy awsChallenge Files to Runner Directory
-        run: rsync -av --delete Aws-Challenge/ ~/Aws-Challenge/
+        run: rsync -av --delete awsChallenge/ ~/awsChallenge/
 
       - name: Initialize Terraform
         run: |
