@@ -1,0 +1,29 @@
+name: Deploy AWS Resources
+
+on:
+  push:
+    branches:
+      - main  # Triggers on main branch push
+  workflow_dispatch:  # Allows manual execution
+
+jobs:
+  destroy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Navigate to Aws-Challenge Directory on Runner
+        run: |
+          cd ~/awsChallenge
+          pwd  # Ensure we're in the correct directory
+
+      - name: Initialize Terraform
+        run: |
+          cd ~/awsChallenge
+          terraform init
+
+      - name: Destroy Terraform Resources
+        run: |
+          cd ~/awsChallenge
+          terraform destroy --auto-approve
